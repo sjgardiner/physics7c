@@ -1,0 +1,550 @@
+% Old physhw document class
+\documentclass[letterpaper, 12pt]{report}
+ 
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{empheq}
+\usepackage{ifthen}
+\usepackage{pgfplots}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
+
+\newif\ifpgbrks % Conditional that controls whether new problems should
+                % start on a new page
+\pgbrkstrue     % Default is to start new problems on a new page
+
+\makeatletter
+
+\setlength{\headheight}{15pt}
+\lhead{\@author}\chead{\@title}\rhead{\today}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+\pagestyle{fancy}
+ 
+\ifx\pdfoutput\undefined %LaTeX
+\usepackage[ps2pdf,bookmarks=true]{hyperref}
+\hypersetup{ %
+pdfauthor = {\@author},
+pdftitle = {\@title},
+pdfcreator = {LaTeX with hyperref package},
+pdfproducer = {dvips + ps2pdf}
+}
+\else %PDFLaTeX
+\usepackage[pdftex,bookmarks=true]{hyperref}
+\hypersetup{ %
+pdfauthor = {\@author},
+pdftitle = {\@title},
+pdfcreator = {LaTeX with hyperref package},
+pdfproducer = {dvips + ps2pdf}
+}
+\pdfadjustspacing=1
+\fi
+ 
+% Set up counters for problems and subsections
+ 
+\newcounter{ProblemNum}
+\newcounter{SubProblemNum}[ProblemNum]
+ 
+\renewcommand{\theProblemNum}{\arabic{ProblemNum}}
+\renewcommand{\theSubProblemNum}{\alph{SubProblemNum}}
+ 
+\newcommand*{\anyproblem}[1]{\ifpgbrks\newpage\fi\subsection*{#1}}
+%\newcommand*{\problem}[1]{\stepcounter{ProblemNum} %
+%\anyproblem{Problem \theProblemNum. \; #1}}
+%
+\newcommand*{\problem}[1][\theProblemNum]{\stepcounter{ProblemNum} %
+\anyproblem{Problem #1.}}
+%
+\newcommand*{\soln}[1]{\subsubsection*{#1}}
+\newcommand*{\solution}{\soln{Solution}}
+\renewcommand*{\part}{\stepcounter{SubProblemNum} %
+\soln{Part (\theSubProblemNum)}}
+ 
+\renewcommand{\theenumi}{(\alph{enumi})}
+\renewcommand{\labelenumi}{\theenumi}
+\renewcommand{\theenumii}{\roman{enumii}}
+ 
+% Redefines the \maketitle command previously defined by the report document class.
+% The default \maketitle macro clears the values of \@author, etc., but we want to keep
+% those to print as part of each page's header. To enable the user to add a title page if desired,
+% the \maketitle definition from report.cls is repeated here, but with the commands to clear \@author, etc.
+% commented out.
+\if@titlepage
+  \renewcommand\maketitle{\begin{titlepage}%
+  \let\footnotesize\small
+  \let\footnoterule\relax
+  \let \footnote \thanks
+  \null\vfil
+  \vskip 60\p@
+  \begin{center}%
+    {\LARGE \@title \par}%
+    \vskip 3em%
+    {\large
+     \lineskip .75em%
+      \begin{tabular}[t]{c}%
+        \@author
+      \end{tabular}\par}%
+      \vskip 1.5em%
+    {\large \@date \par}%       % Set date in \large size.
+  \end{center}\par
+  \@thanks
+  \vfil\null
+  \end{titlepage}%
+%  \setcounter{footnote}{0}%
+%  \global\let\thanks\relax
+%  \global\let\maketitle\relax
+%  \global\let\@thanks\@empty
+%  \global\let\@author\@empty
+%  \global\let\@date\@empty
+%  \global\let\@title\@empty
+%  \global\let\title\relax
+%  \global\let\author\relax
+%  \global\let\date\relax
+%  \global\let\and\relax
+}
+\else
+\renewcommand\maketitle{\par
+  \begingroup
+    \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
+    \def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
+    \long\def\@makefntext##1{\parindent 1em\noindent
+            \hb@xt@1.8em{%
+                \hss\@textsuperscript{\normalfont\@thefnmark}}##1}%
+    \if@twocolumn
+      \ifnum \col@number=\@ne
+        \@maketitle
+      \else
+        \twocolumn[\@maketitle]%
+      \fi
+    \else
+      \newpage
+      \global\@topnum\z@   % Prevents figures from going at top of page.
+      \@maketitle
+    \fi
+    \thispagestyle{plain}\@thanks
+  \endgroup
+%  \setcounter{footnote}{0}%
+%  \global\let\thanks\relax
+%  \global\let\maketitle\relax
+%  \global\let\@maketitle\relax
+%  \global\let\@thanks\@empty
+%  \global\let\@author\@empty
+%  \global\let\@date\@empty
+%  \global\let\@title\@empty
+%  \global\let\title\relax
+%  \global\let\author\relax
+%  \global\let\date\relax
+%  \global\let\and\relax
+}
+\fi
+
+\makeatother
+
+%%%%% Old physhw style
+\usepackage{amsmath} % AMS Math Package
+\usepackage{amssymb} % AMS Math Symbols
+\usepackage{amsthm}  % AMS Theorem Formatting
+\usepackage{etoolbox} % Needed for defining the \cycle command
+\usepackage{booktabs} % Needed for nice-looking tables
+\usepackage{caption} % Needed for adding captions to tabular environments, etc.
+
+\setlength\parindent{0pt}
+
+%\pagestyle{empty} % Removes page numbers
+
+\newcommand{\p}[1]{\ensuremath{\left(#1\right)}} % Shortcut for matched variable-size parentheses
+\newcommand{\br}[1]{\ensuremath{\left[#1\right]}} % Shortcut for matched variable-size square brackets
+
+% Cycle notation for permutation groups
+% Based on code found at http://tex.stackexchange.com/questions/54875/variable-argument-command 
+\newcounter{totalcount}
+\newcounter{listcount}
+\newcommand{\cycle}[1]{
+  \ensuremath{
+    \setcounter{totalcount}{0} % Reset total count
+    \renewcommand*{\do}[1]{\stepcounter{totalcount}} % Reconfigure count
+    \docsvlist{#1} % Count number of items
+    \setcounter{listcount}{0} % Reset current item count
+    \renewcommand*{\do}[1]{\stepcounter{listcount}% Next item
+    ##1\ifnum\value{listcount}<\value{totalcount}\;\fi} % Print item
+    \left(\docsvlist{#1}\right) % Process list
+  }
+}
+
+\newcommand{\set}[1]{\ensuremath{\left\{ #1 \right\}}} % for sets written using curly brackets
+
+\newcommand{\abs}[1]{\left| #1 \right|} % for absolute value
+\newcommand{\avg}[1]{\left< #1 \right>} % for average
+
+\let\vaccent=\v % rename builtin command \v{} to \vaccent{}
+\renewcommand{\v}[1]{\ensuremath{\mathbf{#1}}} % for vectors
+\newcommand{\gv}[1]{\ensuremath{\boldsymbol{#1}}}
+% for vectors of Greek letters, etc.
+\newcommand{\uv}[1]{\ensuremath{\mathbf{\hat{#1}}}} % for unit vector
+\newcommand{\guv}[1]{\ensuremath{\boldsymbol{\hat{#1}}}}
+% for unit vectors of Greek letters, etc.
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert} % for vector norm
+\let\underdot=\d % rename builtin command \d{} to \underdot{}
+\renewcommand{\d}[2]{\frac{d #1}{d #2}} % for derivatives
+\newcommand{\dd}[2]{\frac{d^2 #1}{d #2^2}} % for double derivatives
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}} 
+% for partial derivatives
+\newcommand{\pdd}[2]{\frac{\partial^2 #1}{\partial #2^2}} 
+% for double partial derivatives
+\newcommand{\pdc}[3]{\left( \frac{\partial #1}{\partial #2}
+ \right)_{#3}} % for thermodynamic partial derivatives
+\newcommand{\ket}[1]{\left| #1 \right>} % for Dirac bras
+\newcommand{\bra}[1]{\left< #1 \right|} % for Dirac kets
+\newcommand{\braket}[2]{\left< #1 \vphantom{#2} \right|
+ \left. #2 \vphantom{#1} \right>} % for Dirac brackets
+\newcommand{\matrixel}[3]{\left< #1 \vphantom{#2#3} \right|
+ #2 \left| #3 \vphantom{#1#2} \right>} % for Dirac matrix elements
+\newcommand{\grad}[1]{\gv{\nabla} #1} % for gradient
+\let\divsymb=\div % rename builtin command \div to \divsymb
+\renewcommand{\div}[1]{\gv{\nabla} \cdot #1} % for divergence
+\newcommand{\curl}[1]{\gv{\nabla} \times #1} % for curl
+\DeclareMathOperator{\lagr}{\mathcal{L}} % Lagrangian operator written using a curly L
+\DeclareMathOperator{\tr}{\mathrm{tr}} % Trace  operation
+%\let\baraccent=\= % rename builtin command \= to \baraccent
+%\renewcommand{\=}[1]{\stackrel{#1}{=}} % for putting numbers above =
+%\newtheorem{prop}{Proposition}
+\ifx\c@section\undefined
+  % Define the section counter if it is not defined already
+  \newcounter{section}
+\fi
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}{Lemma}[]
+%\theoremstyle{definition}
+%\newtheorem{dfn}{Definition}
+%\theoremstyle{remark}
+%\newtheorem*{rmk}{Remark}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% **** Old problem_template.tex ****
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\author{}
+\title{Extra Wave Graph Practice}
+
+\begin{document}
+
+%\begin{enumerate}
+%\item The 1D harmonic wave function $y(x,t)$ is a
+%function of two variables, so to graph the whole thing
+%we would need a 3D plot.
+%
+%\item In Physics 7C, we only look at 2D plots of the
+%wave at a specific place or at a specific time.
+%
+%\item The 1D wave equation has the form
+%
+%\[y(x,t) = y_0 + A\sin\br{\frac{2\pi t}{T}
+%\mp \frac{2\pi x}{\lambda} + \phi}\]
+%
+%where
+%\begin{description}
+%\item[$y_0$] is the equilibrium displacement (the 
+%value of $y$ exactly in the middle between a peak and a
+%trough),
+%
+%\item[$A$] is the amplitude (on a graph, this is the
+%vertical distance from equilibrium to a peak, or,
+%equivalently, the vertical distance between a peak and
+%a trough divided by two),
+%
+%\item[$T$] is the period (on a graph of $y$ versus
+%\textit{time}, this is the distance between two peaks
+%or two troughs),
+%
+%\item[$\mp$] is a sign that is determined by the
+%direction of the wave ($-$ means that the wave is
+%moving toward the right [positive $x$ direction],
+%while $+$ means the wave is moving toward the
+%left [negative $x$ direction]),
+%
+%\item[$\lambda$] is the wavelength (on a
+%graph of $y$ versus \textit{position}, this is the
+%distance between two peaks or troughs), and
+%
+%\item[$\phi$] is the phase constant (determines the
+%value of $y$ at time $t = 0$, it's easiest to find this
+%piece by plugging in values and solving for it after
+%you've found everything else)
+%
+%\end{description}
+%
+%\item To write the wave equation using graphs, follow
+%these steps:
+%
+%\begin{enumerate}
+%\item Determine where the equilibrium point is.
+%This gives you $y_0$.
+%\item Read the amplitude, wavelength, and period
+%off the graphs using the techniques from the
+%description above.
+%\item Determine the direction the wave is moving by
+%choosing a point and looking at how its displacement
+%changes a little bit later in time. You
+%will want to choose a point for
+%this step that is not at a maximum or a minimum
+%initially (otherwise it will go down or go up
+%regardless of the direction of the wave).
+%\item Find the phase constant by solving the wave
+%equation for it using a point with a known displacement
+%at a given position and time. If you did all of the
+%other steps correctly, any point for which you can get
+%a $y$ value from the graph will work, but you will have
+%a lot less trouble if you pick a point that is at a
+%maximum or a minimum. 
+%\end{enumerate}
+
+%\item
+\textbf{Practice Problem}:
+Determine the wave equation based on the 
+graphs below. A solution is given on the next page.
+
+\begin{tikzpicture}
+  \begin{axis}[title style={align=center},
+               title=$t\:{=}\:##t0##\text{ s}$,
+               xmin=0,
+               xmax=##xmax##,
+               xtick={0,1,...,##xmax##},
+               ytick={-##amplitude##,...,##amplitude##},
+               minor x tick num={3},
+               minor y tick num={1},
+               xlabel=x (m),
+               ylabel=y (cm),
+               width=0.85\textwidth,
+               height=0.25\textwidth]
+  \addplot[ultra thick,
+           domain=0:##xmax+0.5##,samples=200]
+        {##amplitude##*sin(deg(2*pi*##t0##/##period##)
+         ##spatial_term_sign## deg(2*pi*x/##wavelength##)
+         + deg(##phase##))};
+  \end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \begin{axis}[title style={align=center},
+               title=$x\:{=}\:##x0##\text{ m}$,
+               xmin=0,
+               xmax=##tmax##,
+               xtick={0,1,...,##tmax##},
+               ytick={-##amplitude##,...,##amplitude##},
+               minor x tick num={3},
+               minor y tick num={1},
+               xlabel=t (s),
+               ylabel=y (cm),
+               width=0.85\textwidth,
+               height=0.25\textwidth]
+  \addplot[ultra thick,
+           domain=0:##tmax+0.5##,samples=200]
+  {##amplitude##*sin(deg(2*pi*x/##period##)
+       ##spatial_term_sign## deg(2*pi*##x0##/##wavelength##)
+       + deg(##phase##))};
+  \end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \begin{axis}[title style={align=center},
+               title=$t\:{=}\:##t1##\text{ s}$,
+               xmin=0,
+               xmax=##xmax##,
+               xtick={0,1,...,##xmax##},
+               ytick={-##amplitude##,...,##amplitude##},
+               minor x tick num={3},
+               minor y tick num={1},
+               xlabel=x (m),
+               ylabel=y (cm),
+               width=0.85\textwidth,
+               height=0.25\textwidth]
+  \addplot[ultra thick,
+           domain=0:##xmax+0.5##,samples=200]
+        {##amplitude##*sin(deg(2*pi*##t1##/##period##)
+         ##spatial_term_sign## deg(2*pi*x/##wavelength##)
+         + deg(##phase##))};
+  \end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \begin{axis}[title style={align=center},
+               title=$x\:{=}\:##x1##\text{ m}$,
+               xmin=0,
+               xmax=##tmax##,
+               xtick={0,1,...,##tmax##},
+               ytick={-##amplitude##,...,##amplitude##},
+               minor x tick num={3},
+               minor y tick num={1},
+               xlabel=t (s),
+               ylabel=y (cm),
+               width=0.85\textwidth,
+               height=0.25\textwidth]
+  \addplot[ultra thick,
+           domain=0:##tmax+0.5##,samples=200]
+  {##amplitude##*sin(deg(2*pi*x/##period##)
+       ##spatial_term_sign## deg(2*pi*##x1##/##wavelength##)
+       + deg(##phase##))};
+  \end{axis}
+\end{tikzpicture}
+
+\newpage
+
+%\item
+\textbf{Solution}
+
+\[##wave_equation##\]
+
+%\begin{enumerate}
+%\item We see from the graphs that $y = 0$ is
+%the midpoint between a peak ($y = 1$)
+%and a trough ($y = -1$), so it will be the equilibrium
+%displacement ($y_0 = 0$).
+%\item On the position graph (top graph), the distance
+%between two peaks is $6\text{ m} - 3\text{ m}$, so the
+%wavelength $\lambda = 3\text{ m}$.
+%\item On the time graph (bottom graph), the distance
+%between two peaks is $7\text{ s} - 3\text{ s}$, so the
+%period $T = 4\text{ s}$.
+%\item The peaks are located at $y = 1\text{ cm}$, and
+%the troughs are located at $y = -1\text{ cm}$, so the
+%amplitude is $A = (1 - (-1))/2 = 1\text{ cm}$.
+%\item So far, we have
+%
+%\[y(x,t) = \br{1\text{ cm}}
+%\sin\!\br{\frac{2\,\pi\,t}{4s}
+%\mp\frac{2\,\pi\,x}{3m} + \phi}\,.\]
+%
+%Let's now figure out the direction of the wave. We'll
+%need to choose a point on the wave for which we have
+%time information. The time graph gives us information
+%about $x = 2.25 \text{ cm}$, which is at equilibrium at
+%$t = 2\text{ s}$ according to our position graph. Since
+%this point is not at a maximum or a minimum on our
+%position graph, we will be able to figure out which
+%direction the wave is traveling using this point. If it
+%were at a maximum on our position graph, it would move
+%downward at a slightly later time for both wave
+%directions, so we would have to choose a different
+%point in such a case.
+%
+%\newpage
+%
+%\item At time $t = 2\text{ s}$, the point on the wave
+%at $x = 2.25\text{ cm}$ is at equilibrium. If we look
+%on the time graph to see where it is a little bit later
+%(say, $t = 2.1\text{ s}$), we see that it will move up. 
+%Let's try picturing the wave shifted both left and
+%right a little to see which direction makes that point
+%move up. In the graph below, the black line shows the
+%wave at $t = 2\text{ s}$, the blue line shows it
+%slightly shifted to the left, and the red line shows it
+%slightly shifted to the right. I've drawn a dashed line
+%at $x = 2.25\text{ m}$ so that we
+%can see more clearly what
+%happens to the piece of the wave at that position in
+%both cases. Comparing the two possibilities using the
+%blue and red waves, we see that, if the wave moves to
+%the left, the point at $x = 2.25\text{ m}$ moves up
+%like we expect. The wave therefore travels to the left,
+%so we pick the $+$ sign to go in front of $2\pi
+%x/\lambda$ in our wave equation.
+%
+%\begin{tikzpicture}
+%  \begin{axis}[title style={align=center},
+%               title=$t\:{=}\:2s$,
+%               xmin=0,
+%               xmax=9,
+%               xlabel=x (m),
+%               ylabel=y (cm),
+%               width=0.85\textwidth,
+%               height=0.25\textwidth]
+%  \addplot[ultra thick,
+%           domain=0:9.42478,samples=200]
+%        {sin(deg(2*pi*2/4) + deg(2*pi*x/3)
+%         + deg(3*pi/2))};
+%  \addplot[ultra thick,blue,
+%           domain=0:9.42478,samples=200]
+%        {sin(deg(2*pi*2.3/4) + deg(2*pi*x/3)
+%         + deg(3*pi/2))};
+%  \addplot[ultra thick, red,
+%           domain=0:9.42478,samples=200]
+%        {sin(deg(2*pi*1.7/4) + deg(2*pi*x/3)
+%         + deg(3*pi/2))};
+%  \addplot[dashed, very thick, domain=-1.2:1.1] (2.5,x);
+%  \end{axis}
+%\end{tikzpicture}
+%
+%\item We still need to find the phase constant. For
+%this part, it is helpful to pick another point for
+%which we can get a $y$ value from the graph. This time,
+%we want to choose a point that is at a minimum or
+%a maximum.
+%Otherwise, when we take the inverse sine ($\sin^{-1}$)
+%of both sides of the equation to solve for $\phi$, we
+%will end up with two solutions for $\phi$. For example,
+%if I choose a point that is at equilibrium (so
+%$y(x,t) = 0\text{ cm}$) when I calculate
+%$\sin^{-1}(0)$ I get two solutions: $0$ and
+%$\pi$. It is possible to figure out the phase constant
+%this way, but it's harder, and we might as well choose
+%the easy option. Looking back at our position graph for
+%$t = 2s$, we see that, at $x = 0\text{ m}$, $y$ is at a
+%maximum, so that point will do nicely. From the graph,
+%we know then that $y(0\text{ m},2\text{ s}) = 1\text{
+%cm}$, and based on our earlier results, we know that
+%
+%\[y(x,t) = \br{1\text{ cm}}
+%\sin\!\br{\frac{2\,\pi\,t}{4s}
+%+\frac{2\,\pi\,x}{3m} + \phi}\,,\]
+%
+%so, plugging in our values of $x$ and $t$, we have
+%
+%\[y(0\text{ m}, 2\text{ s}) = 
+%\br{1\text{ cm}}
+%\sin\!\br{\frac{2\,\pi\,(2\text{ s})}{4s} + \phi}
+%= \br{1\text{ cm}}\sin\br{\pi + \phi}\,.\]
+%
+%We found earlier from the graph that 
+%
+%\[y(0\text{ m},2\text{ s}) = 1\text{
+%cm}\,,\]
+%
+%so, if we set these equations equal to each other, we
+%get
+%
+%\[
+%\br{1\text{ cm}}\sin\br{\pi + \phi}
+%= 1\text{ cm}\,.\]
+%
+%We can divide both sides by the amplitude (1 cm). Doing
+%so gives us the equation
+%
+%\[\sin\br{\pi + \phi} = 1\,.\]
+%
+%Taking the inverse sine of both sides gives us
+%
+%\[\pi + \phi = \sin^{-1}\br{1} = \frac{\pi}{2}\,.\]
+%
+%Note that the inverse sine function $\sin^{-1}(z)$
+%gives a single value for only two numbers: $z = \pm1$.
+%This is why I recommend using a maximum or a minimum
+%when solving the wave equation for $\phi$ in this way.  
+%Subtracting $\pi$ from both sides gives us
+%
+%\[\phi = -\frac{\pi}{2}\,.\]
+%
+%We could leave our answer like this and it would be
+%just fine. I usually like to make my phase constants
+%positive and in between $0$ and $2\pi$. We can do this
+%by adding or subtracting $2\pi$ repeatedly until we
+%bring the phase constant within range. This works
+%because $2\pi$ represents a full cycle of the sine
+%function. If we add $2\pi$ to our result, we get our
+%final value
+%
+%\[\phi = \frac{3\pi}{2}\,.\]
+%
+%\end{enumerate}
+%
+%\end{enumerate}
+
+\end{document}
